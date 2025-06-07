@@ -51,6 +51,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.navigation.NavController
 import com.example.cardify.navigation.Screen
+import android.net.Uri
+import java.io.FileOutputStream
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -131,8 +133,9 @@ fun AddFromCameraScreen(
                         onImageCaptured = { bitmap ->
                             // Pass the bitmap to MainActivity for analysis
                             onImageCaptured(bitmap)
-                            // Navigate to auto-classify screen after capture
-                            navController.navigate(Screen.AddAutoClassify.route)
+                            val uri = saveBitmapToCache(context, bitmap)
+                            val encoded = android.net.Uri.encode(uri.toString())
+                            navController.navigate(Screen.AddAutoClassify.createRoute(encoded))
                         },
                         onError = { error ->
                             Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
@@ -268,4 +271,12 @@ fun createImageFile(context: Context): File {
         ".jpg",
         storageDir
     )
-}}
+}
+
+private fun saveBitmapToCache(context: Context, bitmap: Bitmap): Uri {
+    val file = createImageFile(context)
+    FileOutputStream(file).use { out ->
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
+    }
+    return file.toUri()
+}
