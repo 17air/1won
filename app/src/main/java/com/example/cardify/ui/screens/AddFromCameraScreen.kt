@@ -257,6 +257,12 @@ fun CameraCaptureView(
         }
     }
 }
+}
+
+
+
+
+
 
 @SuppressLint("SimpleDateFormat")
 fun createImageFile(context: Context): File {
