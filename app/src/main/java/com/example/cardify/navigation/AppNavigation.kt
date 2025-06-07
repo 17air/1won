@@ -21,12 +21,16 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.cardify.auth.TokenManager
 import com.example.cardify.features.QuestionBank
+import com.example.cardify.features.OcrNerProcessor
 import com.example.cardify.models.CardCreationViewModel
 import com.example.cardify.models.LoginViewModel
 import com.example.cardify.models.MainScreenViewModel
 import com.example.cardify.ui.screens.CreateEssentialsScreen
 import com.example.cardify.ui.screens.CreateProgressScreen
 import com.example.cardify.ui.screens.CreateQuestionScreen
+import com.example.cardify.ui.screens.LocalClassifyScreen
+import com.example.cardify.ui.screens.CardBookScreen
+import com.example.cardify.ui.screens.EditCardScreen
 import com.example.cardify.ui.screens.LoginScreen
 import com.example.cardify.ui.screens.MainEmptyScreen
 import com.example.cardify.ui.screens.MainExistScreen
@@ -47,6 +51,7 @@ sealed class Screen(val route: String) {
     object AddImageSelect : Screen("add_image_select_screen/{imageUri}") {
         fun createRoute(imageUri: String) = "add_image_select_screen/$imageUri"
     }
+    object LocalClassify : Screen("local_classify")
     object CreateConfirm : Screen("create_confirm")
     object CreateDesign : Screen("create_design")
     object CreateEssentials : Screen("create_essentials")
@@ -60,6 +65,9 @@ sealed class Screen(val route: String) {
     object Register : Screen("register")
     object Splash : Screen("splash")
     object CardBook : Screen("card_book_screen") //미구현
+    object EditCard : Screen("edit_card/{index}") {
+        fun createRoute(index: Int) = "edit_card/$index"
+    }
     object Settings : Screen("settings_screen") //미구현
     object CardDetail : Screen("card_detail/{cardId}") { //미구현
        fun createRoute(cardId: String) = "card_detail/$cardId" //미구현
@@ -299,14 +307,11 @@ val token = tokenManager.getToken()
         }
 
         composable(Screen.AddFromCamera.route) {
-            val tokenManager = TokenManager(LocalContext.current)
-            val token = tokenManager.getToken() ?: ""
-            
             AddFromCameraScreen(
                 navController = navController,
                 onImageCaptured = { bitmap ->
-                    cardCreationViewModel.analyzeCardImage(bitmap, token)
-                    navController.navigate(Screen.AddAutoClassify.route)
+                    com.example.cardify.data.TempImageHolder.bitmap = bitmap
+                    navController.navigate(Screen.LocalClassify.route)
                 }
             )
         }
@@ -347,6 +352,23 @@ val token = tokenManager.getToken()
                 navController = navController,
                 viewModel = cardCreationViewModel
             )
+        }
+
+        composable(Screen.LocalClassify.route) {
+            val processor = remember { OcrNerProcessor(context) }
+            LocalClassifyScreen(navController = navController, processor = processor)
+        }
+
+        composable(Screen.CardBook.route) {
+            CardBookScreen(navController)
+        }
+
+        composable(
+            route = Screen.EditCard.route,
+            arguments = listOf(navArgument("index") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val idx = backStackEntry.arguments?.getInt("index") ?: 0
+            EditCardScreen(index = idx, navController = navController)
         }
 
         composable(Screen.AddConfirm.route) {
