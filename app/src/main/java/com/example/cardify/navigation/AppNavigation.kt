@@ -177,6 +177,17 @@ val token = tokenManager.getToken()
             )
         }
 
+        composable(Screen.AddExisting.route) {
+            AddExistingScreen(
+                navController = navController,
+                onImageSelected = { uri ->
+                    navController.navigate(
+                        Screen.AddImageSelect.createRoute(uri.toString())
+                    )
+                }
+            )
+        }
+
         //CreateEssential.kt
         composable(Screen.CreateEssentials.route) {
             val tokenManager = TokenManager(LocalContext.current)
