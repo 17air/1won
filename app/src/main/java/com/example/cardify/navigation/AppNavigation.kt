@@ -19,6 +19,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import com.example.cardify.auth.TokenManager
 import com.example.cardify.features.QuestionBank
 import com.example.cardify.models.CardCreationViewModel
@@ -27,6 +29,10 @@ import com.example.cardify.models.MainScreenViewModel
 import com.example.cardify.ui.screens.CreateEssentialsScreen
 import com.example.cardify.ui.screens.CreateProgressScreen
 import com.example.cardify.ui.screens.CreateQuestionScreen
+import com.example.cardify.ui.screens.AddExistingScreen
+import com.example.cardify.ui.screens.AddImageSelectScreen
+import com.example.cardify.ui.screens.AddAutoClassifyScreen
+import com.example.cardify.ui.screens.AddClassifiedScreen
 import com.example.cardify.ui.screens.LoginScreen
 import com.example.cardify.ui.screens.MainEmptyScreen
 import com.example.cardify.ui.screens.MainExistScreen
@@ -254,6 +260,54 @@ val token = tokenManager.getToken()
                         navController.popBackStack(Screen.CreateEssentials.route, inclusive = true)
                     },
                     token = token
+                )
+            }
+
+            /** Additional flows for adding existing cards */
+            composable(Screen.AddExisting.route) {
+                AddExistingScreen(
+                    navController = navController,
+                    onImageSelected = { uri ->
+                        val encoded = android.net.Uri.encode(uri.toString())
+                        navController.navigate(Screen.AddImageSelect.createRoute(encoded))
+                    }
+                )
+            }
+
+            composable(
+                route = Screen.AddImageSelect.route,
+                arguments = listOf(navArgument("imageUri") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val imageUri = backStackEntry.arguments?.getString("imageUri")
+                AddImageSelectScreen(
+                    navController = navController,
+                    imageUri = imageUri
+                )
+            }
+
+            composable(
+                route = Screen.AddAutoClassify.route,
+                arguments = listOf(navArgument("imageUri") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val imageUri = backStackEntry.arguments?.getString("imageUri") ?: ""
+                val bitmap = loadBitmapFromUri(context, imageUri)
+                bitmap?.let { capturedBitmap ->
+                    AddAutoClassifyScreen(
+                        navController = navController,
+                        viewModel = cardCreationViewModel,
+                        capturedImage = capturedBitmap
+                    )
+                } ?: run {
+                    LaunchedEffect(Unit) {
+                        navController.popBackStack()
+                    }
+                }
+            }
+
+            composable(Screen.AddClassified.route) {
+                AddClassifiedScreen(
+                    navController = navController,
+                    viewModel = cardCreationViewModel
                 )
             }
     }
