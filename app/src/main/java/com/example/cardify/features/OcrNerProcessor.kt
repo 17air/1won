@@ -17,8 +17,8 @@ class OcrNerProcessor(context: Context) {
         val text = result.text
 
         val nameRegex = Regex("[가-힣]{2,4}")
-        val phoneRegex = Regex("\d{2,3}-\d{3,4}-\d{4}")
-        val emailRegex = Regex("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}")
+        val phoneRegex = Regex("""\d{2,3}-\d{3,4}-\d{4}""")
+        val emailRegex = Regex("""[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}""")
         val positionRegex = Regex("(대표|이사|사원|팀장|매니저|과장|차장|부장)")
 
         val name = nameRegex.find(text)?.value ?: ""
