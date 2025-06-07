@@ -99,7 +99,9 @@ fun AddImageSelectScreen(
             Button(
                 onClick = { 
                     decodedUri?.let { uri ->
-                        navController.navigate(Screen.AddAutoClassify.createRoute(uri))
+                        navController.navigate(
+                            Screen.AddAutoClassify.createRoute(Uri.encode(uri))
+                        )
                     } ?: run {
                         // Show error if no image is selected
                         Toast.makeText(context, "이미지를 선택해주세요.", Toast.LENGTH_SHORT).show()
