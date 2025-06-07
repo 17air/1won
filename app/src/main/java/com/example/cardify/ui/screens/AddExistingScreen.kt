@@ -32,6 +32,8 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -52,12 +54,13 @@ fun AddExistingScreen(
     onImageSelected: (Uri) -> Unit = {}
 ) {
     val context = LocalContext.current
-    
+    var pendingUri by remember { mutableStateOf<Uri?>(null) }
+
     // Launchers for different image selection methods
     val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
-        uri?.let { onImageSelected(it) }
+        pendingUri = uri
     }
     
     val cameraLauncher = rememberLauncherForActivityResult(
@@ -71,7 +74,7 @@ fun AddExistingScreen(
     val fileLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetMultipleContents()
     ) { uris ->
-        uris.firstOrNull()?.let { onImageSelected(it) }
+        pendingUri = uris.firstOrNull()
     }
     
     val permissionLauncher = rememberLauncherForActivityResult(
@@ -81,6 +84,13 @@ fun AddExistingScreen(
             // Permission granted, proceed with the action
         } else {
             Toast.makeText(context, "Permission required to access files", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    LaunchedEffect(pendingUri) {
+        pendingUri?.let { uri ->
+            onImageSelected(uri)
+            pendingUri = null
         }
     }
     

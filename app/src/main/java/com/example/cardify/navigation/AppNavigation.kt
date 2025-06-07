@@ -16,9 +16,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.cardify.auth.TokenManager
 import com.example.cardify.features.QuestionBank
 import com.example.cardify.models.CardCreationViewModel
@@ -51,7 +53,15 @@ sealed class Screen(val route: String) {
     object AddImageSelect : Screen("add_image_select_screen/{imageUri}") {
         fun createRoute(imageUri: String) = "add_image_select_screen/$imageUri"
     }
-    object OcrNer : Screen("ocr_ner_screen")
+    object OcrNer : Screen("ocr_ner_screen") {
+        fun createRoute(imageUri: String? = null): String {
+            return if (imageUri != null) {
+                "ocr_ner_screen?imageUri=${java.net.URLEncoder.encode(imageUri, \"UTF-8\")}"
+            } else {
+                "ocr_ner_screen"
+            }
+        }
+    }
     object CreateConfirm : Screen("create_confirm")
     object CreateDesign : Screen("create_design")
     object CreateEssentials : Screen("create_essentials")
@@ -183,8 +193,8 @@ val token = tokenManager.getToken()
         }
 
         composable(Screen.AddExisting.route) {
-            AddExistingScreen(navController = navController) {
-                navController.navigate(Screen.OcrNer.route)
+            AddExistingScreen(navController = navController) { uri ->
+                navController.navigate(Screen.OcrNer.createRoute(uri.toString()))
             }
         }
 
@@ -360,9 +370,17 @@ val token = tokenManager.getToken()
             )
         }
 
-        composable(Screen.OcrNer.route) {
+        composable(
+            route = "${Screen.OcrNer.route}?imageUri={imageUri}",
+            arguments = listOf(navArgument("imageUri") { nullable = true })
+        ) { backStackEntry ->
+            val uriArg = backStackEntry.arguments?.getString("imageUri")
+            val initUri = uriArg?.let { android.net.Uri.parse(it) }
             val cardBookViewModel: CardBookViewModel = viewModel()
-            OcrNerScreen(viewModel = cardBookViewModel) {
+            OcrNerScreen(
+                viewModel = cardBookViewModel,
+                initialImageUri = initUri
+            ) {
                 navController.navigate(Screen.CardBook.route) {
                     popUpTo(Screen.OcrNer.route) { inclusive = true }
                 }

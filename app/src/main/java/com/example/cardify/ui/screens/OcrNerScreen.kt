@@ -40,11 +40,12 @@ import kotlinx.coroutines.tasks.await
 fun OcrNerScreen(
     viewModel: CardBookViewModel,
     onComplete: () -> Unit,
+    initialImageUri: Uri? = null,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
 
-    val selectedImage = remember { mutableStateOf<Uri?>(null) }
+    val selectedImage = remember { mutableStateOf<Uri?>(initialImageUri) }
     val resultText = remember { mutableStateOf("") }
     var parsedCard by remember { mutableStateOf<BusinessCard?>(null) }
 
