@@ -19,6 +19,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import com.example.cardify.auth.TokenManager
 import com.example.cardify.features.QuestionBank
 import com.example.cardify.models.CardCreationViewModel
@@ -27,6 +29,10 @@ import com.example.cardify.models.MainScreenViewModel
 import com.example.cardify.ui.screens.CreateEssentialsScreen
 import com.example.cardify.ui.screens.CreateProgressScreen
 import com.example.cardify.ui.screens.CreateQuestionScreen
+import com.example.cardify.ui.screens.AddExistingScreen
+import com.example.cardify.ui.screens.AddImageSelectScreen
+import com.example.cardify.ui.screens.AddAutoClassifyScreen
+import com.example.cardify.ui.screens.AddClassifiedScreen
 import com.example.cardify.ui.screens.LoginScreen
 import com.example.cardify.ui.screens.MainEmptyScreen
 import com.example.cardify.ui.screens.MainExistScreen
