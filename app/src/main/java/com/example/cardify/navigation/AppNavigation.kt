@@ -256,6 +256,54 @@ val token = tokenManager.getToken()
                     token = token
                 )
             }
+
+            /** Additional flows for adding existing cards */
+            composable(Screen.AddExisting.route) {
+                AddExistingScreen(
+                    navController = navController,
+                    onImageSelected = { uri ->
+                        val encoded = android.net.Uri.encode(uri.toString())
+                        navController.navigate(Screen.AddImageSelect.createRoute(encoded))
+                    }
+                )
+            }
+
+            composable(
+                route = Screen.AddImageSelect.route,
+                arguments = listOf(navArgument("imageUri") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val imageUri = backStackEntry.arguments?.getString("imageUri")
+                AddImageSelectScreen(
+                    navController = navController,
+                    imageUri = imageUri
+                )
+            }
+
+            composable(
+                route = Screen.AddAutoClassify.route,
+                arguments = listOf(navArgument("imageUri") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val imageUri = backStackEntry.arguments?.getString("imageUri") ?: ""
+                val bitmap = loadBitmapFromUri(context, imageUri)
+                bitmap?.let { capturedBitmap ->
+                    AddAutoClassifyScreen(
+                        navController = navController,
+                        viewModel = cardCreationViewModel,
+                        capturedImage = capturedBitmap
+                    )
+                } ?: run {
+                    LaunchedEffect(Unit) {
+                        navController.popBackStack()
+                    }
+                }
+            }
+
+            composable(Screen.AddClassified.route) {
+                AddClassifiedScreen(
+                    navController = navController,
+                    viewModel = cardCreationViewModel
+                )
+            }
     }
 }
 /*
