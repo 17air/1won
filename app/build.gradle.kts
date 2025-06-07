@@ -94,6 +94,7 @@ dependencies {
 
     // Coroutine 연동용
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
 
     // Camera    
     implementation("androidx.camera:camera-core:1.4.2")
@@ -103,6 +104,13 @@ dependencies {
     
     // Coil for image loading
     implementation("io.coil-kt:coil-compose:2.5.0")
+
+    // ML Kit OCR
+    implementation("com.google.mlkit:text-recognition-korean:16.0.0")
+
+    // TensorFlow Lite
+    implementation("org.tensorflow:tensorflow-lite:2.14.0")
+    implementation("org.tensorflow:tensorflow-lite-support:0.4.4")
 
 
 }

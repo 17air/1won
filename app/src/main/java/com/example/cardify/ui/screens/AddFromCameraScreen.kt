@@ -129,10 +129,9 @@ fun AddFromCameraScreen(
                     CameraCaptureView(
                         modifier = Modifier.fillMaxSize(),
                         onImageCaptured = { bitmap ->
-                            // Pass the bitmap to MainActivity for analysis
                             onImageCaptured(bitmap)
-                            // Navigate to auto-classify screen after capture
-                            navController.navigate(Screen.AddAutoClassify.route)
+                            com.example.cardify.data.TempImageHolder.bitmap = bitmap
+                            navController.navigate(Screen.LocalClassify.route)
                         },
                         onError = { error ->
                             Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
