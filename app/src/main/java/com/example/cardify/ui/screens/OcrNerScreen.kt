@@ -109,7 +109,10 @@ fun OcrNerScreen(
             if (selectedImage.value != null && parsedCard != null) {
                 Button(onClick = {
                     coroutineScope.launch {
-                        parsedCard?.let { viewModel.addCard(it.copy(imageUrl = selectedImage.value?.toString())) }
+                        parsedCard?.let { card ->
+                            val imageUrl = selectedImage.value?.toString() ?: ""
+                            viewModel.addCard(card.copy(imageUrl = imageUrl))
+                        }
                         onComplete()
                     }
                 }, modifier = Modifier.padding(top = 16.dp)) {
