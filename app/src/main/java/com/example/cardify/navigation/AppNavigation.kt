@@ -24,6 +24,7 @@ import com.example.cardify.features.QuestionBank
 import com.example.cardify.models.CardCreationViewModel
 import com.example.cardify.models.LoginViewModel
 import com.example.cardify.models.MainScreenViewModel
+import com.example.cardify.models.CardBookViewModel
 import com.example.cardify.ui.screens.CreateEssentialsScreen
 import com.example.cardify.ui.screens.CreateProgressScreen
 import com.example.cardify.ui.screens.CreateQuestionScreen
@@ -33,6 +34,8 @@ import com.example.cardify.ui.screens.MainExistScreen
 import com.example.cardify.ui.screens.RegisterCompleteScreen
 import com.example.cardify.ui.screens.RegisterScreen
 import com.example.cardify.ui.screens.SplashScreen
+import com.example.cardify.ui.screens.OcrNerScreen
+import com.example.cardify.ui.screens.CardBookScreen
 
 sealed class Screen(val route: String) {
     object AddAutoClassify : Screen("add_auto_classify/{imageUri}") {
@@ -47,6 +50,7 @@ sealed class Screen(val route: String) {
     object AddImageSelect : Screen("add_image_select_screen/{imageUri}") {
         fun createRoute(imageUri: String) = "add_image_select_screen/$imageUri"
     }
+    object OcrNer : Screen("ocr_ner_screen")
     object CreateConfirm : Screen("create_confirm")
     object CreateDesign : Screen("create_design")
     object CreateEssentials : Screen("create_essentials")
@@ -347,6 +351,21 @@ val token = tokenManager.getToken()
                 navController = navController,
                 viewModel = cardCreationViewModel
             )
+        }
+
+        composable(Screen.OcrNer.route) {
+            val cardBookViewModel: CardBookViewModel = viewModel()
+            OcrNerScreen(viewModel = cardBookViewModel) {
+                navController.navigate(Screen.CardBook.route) {
+                    popUpTo(Screen.OcrNer.route) { inclusive = true }
+                }
+            }
+        }
+
+        composable(Screen.CardBook.route) {
+            val cardBookViewModel: CardBookViewModel = viewModel()
+            val cards by cardBookViewModel.cards.collectAsState()
+            CardBookScreen(cards)
         }
 
         composable(Screen.AddConfirm.route) {
