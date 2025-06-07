@@ -59,17 +59,6 @@ import java.util.Date
 import java.util.Locale
 import java.util.concurrent.Executors
 
-private fun createImageFile(context: Context): File {
-    val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-    val fileName = "JPEG_${timestamp}_"
-    val storageDir = context.getExternalFilesDir(null)
-    return File.createTempFile(
-        fileName,
-        ".jpg",
-        storageDir
-    )
-}
-
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
