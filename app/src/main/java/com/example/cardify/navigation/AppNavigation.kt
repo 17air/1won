@@ -36,6 +36,7 @@ import com.example.cardify.ui.screens.RegisterScreen
 import com.example.cardify.ui.screens.SplashScreen
 import com.example.cardify.ui.screens.OcrNerScreen
 import com.example.cardify.ui.screens.CardBookScreen
+import com.example.cardify.ui.screens.AddExistingScreen
 
 sealed class Screen(val route: String) {
     object AddAutoClassify : Screen("add_auto_classify/{imageUri}") {
@@ -179,6 +180,12 @@ val token = tokenManager.getToken()
                 onNavigateToCardBook = {},
                 onNavigateToSettings = {}
             )
+        }
+
+        composable(Screen.AddExisting.route) {
+            AddExistingScreen(navController = navController) {
+                navController.navigate(Screen.OcrNer.route)
+            }
         }
 
         //CreateEssential.kt
