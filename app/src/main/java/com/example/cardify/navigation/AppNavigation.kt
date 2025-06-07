@@ -30,9 +30,14 @@ import com.example.cardify.ui.screens.CreateQuestionScreen
 import com.example.cardify.ui.screens.LoginScreen
 import com.example.cardify.ui.screens.MainEmptyScreen
 import com.example.cardify.ui.screens.MainExistScreen
+import com.example.cardify.ui.screens.AddExistingScreen
+import com.example.cardify.ui.screens.AddImageSelectScreen
 import com.example.cardify.ui.screens.RegisterCompleteScreen
 import com.example.cardify.ui.screens.RegisterScreen
 import com.example.cardify.ui.screens.SplashScreen
+import com.example.cardify.ui.screens.AddAutoClassifyScreen
+import com.example.cardify.ui.screens.AddClassifiedScreen
+import com.example.cardify.ui.screens.AddFromCameraScreen
 
 sealed class Screen(val route: String) {
     object AddAutoClassify : Screen("add_auto_classify/{imageUri}") {
