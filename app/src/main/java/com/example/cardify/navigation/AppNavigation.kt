@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -187,7 +188,7 @@ val token = tokenManager.getToken()
                 navController = navController,
                 onImageSelected = { uri ->
                     navController.navigate(
-                        Screen.AddImageSelect.createRoute(uri.toString())
+                        Screen.AddImageSelect.createRoute(Uri.encode(uri.toString()))
                     )
                 }
             )
